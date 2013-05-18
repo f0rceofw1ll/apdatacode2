@@ -10,7 +10,7 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
 	f = figure;
 
 	%% CONSTANTS
-	samplingRate = 20000;
+	fs = 20000;
 
     mkdir([expDirectory 'recSegments']) % make directory for recording files
     folderLoc = [expDirectory 'whisker_stim_folder/'];
@@ -25,12 +25,18 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
             iterString = [];
         else
             iterString = ['_' int2str(iterNum)];
-        end
+		end
         
-		% Read the labview file and get data for plotting
-		recData = parse_whisker_stim_folder_file( [folderLoc 'whisker_stim' iterString '.lvm'] );
-        
-        t = 0:1/samplingRate:length(recData.v)/samplingRate;
+		% check to see if the recData file exists
+		potentialFname = [expDirectory '/recSegments/raw/recData_' int2str(iterNum) '.mat'];
+		if exist(potentialFname)
+			load(potentialFname);
+		else
+			% Read the labview file and get data for plotting
+			recData = parse_whisker_stim_folder_file( [folderLoc 'whisker_stim' iterString '.lvm'] );
+		end
+		
+        t = 0:1/fs:length(recData.v)/fs;
         t = t(1:end-1);
         
 		% Plot the data in recData
@@ -47,9 +53,12 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
 			plot(recData.stimOnsetIndex/20000*[1,1],...
 				sigYLims,'r'); %plot stim onset line in red
 		end
+		if isfield(recData, 'peakLoc')
+			plot(recData.peakLoc/fs, recData.peakAmp, 'ro');
+		end
 		hold off;
         
-		ylim(sigYLims);
+		%ylim(sigYLims);
 
 		subplot(2,1,2);
 		plot(t,recData.sense);

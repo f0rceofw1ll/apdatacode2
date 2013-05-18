@@ -47,7 +47,11 @@ function [] = psth(expDirectory, db, fs, sBefore, sAfter, responseWindow, binWid
 		%convert AP indicies to AP times
 		normAPindices = [];
 		if ~isempty(APindices)
-			normAPindices = APindices - recData.stimOnsetIndex;
+			try
+				normAPindices = APindices - recData.stimOnsetIndex;
+			catch
+				disp('hello');
+			end
 		end
         normAPtimes = normAPindices./fs*1000;
         APtimes = normAPtimes(normAPtimes > -tBefore & normAPtimes < tAfter);

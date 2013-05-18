@@ -31,9 +31,7 @@ function [] = overlaid_responses(expDirectory, db, fs, sBefore, sAfter, plotYLim
 		load(fileLoc);
 		
 		v = recData.v;
-		d = diff(db(i).sense);
-		di = find(d == max(d));
-		motorStimOnset = di;
+		motorStimOnset = recData.stimOnsetIndex;
 
 		vClippingStart = motorStimOnset-sBefore;
 		vClippingEnd = motorStimOnset+sAfter;
