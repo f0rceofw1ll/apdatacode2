@@ -22,7 +22,7 @@ function [] = overlaid_responses(expDirectory, db, fs, sBefore, sAfter, plotYLim
 	timeVector = -tBefore:1/fs:tAfter;
     
     %loop through trials and display the points
-	for i = 1:length(db)
+	for i = 1:length(db)-1
 		%get the AP indicies
 		iterNum = db(i).iterNum;
 		
@@ -42,9 +42,13 @@ function [] = overlaid_responses(expDirectory, db, fs, sBefore, sAfter, plotYLim
 			vClippingEnd = length(v);
 		end
 		v = v(vClippingStart:vClippingEnd);
-		plot(timeVector(1:length(v))*1000,v);
+		plot(timeVector(1:length(v))*1000,v, 'Color', [.6,.6,.6]); %plot each line in gray
         
 	end
+	
+	%plot the average response
+	avgV = mean_response(expDirectory, db);
+	plot(timeVector(1:length(v))*1000,avgV.v(avgV.stimOnsetIndex-sBefore:avgV.stimOnsetIndex+sAfter), 'k','LineWidth',2);
 	
 	plot([0,0], plotYLims, 'r'); %plot stim onset line in red
 	
@@ -64,7 +68,7 @@ function [] = overlaid_responses(expDirectory, db, fs, sBefore, sAfter, plotYLim
 	sense = sense(senseClippingStart:senseClippingEnd);
 	plot(timeVector(1:length(sense))*1000,sense);
 
-	ylim(stimYLims);
+	ylim(stimYLims); xlim([-tBefore, tAfter]*1000);
 	
 	ylabel('Motor stimulation voltage (V)');
 	xlabel('Time from stimulus onset (ms)');

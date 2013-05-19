@@ -11,11 +11,12 @@
 
 clear all
 close all
-folderLocation = '..\Out';
-expFolderName = '2013-05-16 in vivo';
+folderLocation = './data';
+expFolderName = '2013-05-18_in_vivo';
 folder_prefix = 'experiment';
 
-expDirectory = [folderLocation '\' expFolderName '\'];
+expDirectory = [folderLocation '/' expFolderName '/'];
+mkdir([expDirectory '/combinedAnalysis/']);
 
 %Depth List will be structued like this:
 %depthList.folderName = [N x 1] array of expFolderNames (e.g.
@@ -31,13 +32,13 @@ in = input('Reset all_recorded_trials file? [y]/n ', 's');
 switch in
     case 'y'
         all_recorded_trials = [];
-        save('..\combinedAnalysis\all_recorded_trials.mat', 'all_recorded_trials')
+        save([expDirectory '../combinedAnalysis/all_recorded_trials.mat'], 'all_recorded_trials')
 end
         
-load('..\combinedAnalysis\all_recorded_trials.mat')
+load([expDirectory '../combinedAnalysis/all_recorded_trials.mat'])
 
 % List of all trials
-expList = dir([expDirectory '\' folder_prefix '*']);
+expList = dir([expDirectory '/' folder_prefix '*']);
 
 trials_w_recordings = {}; % list of objects w/ recordings
 
@@ -84,7 +85,7 @@ for i = 1:length(expList)
     end
     % if either there is a recording file or there is a non-empty whisker
     % stim folder -> whisker recording found
-    if ~isempty(r_file) || ~isempty(dir([w_s_folder '\whisker*']))
+    if ~isempty(r_file) || ~isempty(dir([w_s_folder '/whisker*']))
         disp('rec found')
         
         setHoldingTime(trial, folderName)
@@ -97,5 +98,6 @@ for i = 1:length(expList)
     save(fileName, 'trial');
 end
 
-save('..\combinedAnalysis\all_recorded_trials.mat', 'all_recorded_trials')
-save([expDirectory '\recording_db.mat'], 'trials_w_recordings') % list of files that have recordings
+save([expDirectory '/combinedAnalysis/all_recorded_trials.mat'], 'all_recorded_trials')
+save([expDirectory '/recording_db.mat'], 'trials_w_recordings') % list of files that have recordings
+disp('DONE');

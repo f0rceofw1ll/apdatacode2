@@ -72,7 +72,7 @@ classdef autopatch_trial < handle
                 nh = at.hunting_resistances.Segment1.data;
                 t_nh = 1:length(nh); % neuron hunting every second
                 plot(t_nh, nh,  'ko-', 'linewidth', 2)
-                ylabel('Pipette resistance (M\Omega)', 'fontsize', 12)
+                ylabel('Pipette resistance (M/Omega)', 'fontsize', 12)
                 xlabel('Time (s)', 'fontsize', 12)
             end
             if isstruct(at.gigaseal_resistances)
@@ -220,9 +220,9 @@ classdef autopatch_trial < handle
             
             for i = 1:length(clampNames)
                currentClampName = clampNames{i};
-               clamp_recs = lvm_import([currentClampName '\Recordings.lvm']);
+               clamp_recs = lvm_import([currentClampName '/Recordings.lvm']);
                clamp_recs = clamp_recs.Segment1.data;
-               view_recs = lvm_import([currentClampName '\View_profile.lvm']);
+               view_recs = lvm_import([currentClampName '/View_profile.lvm']);
                view_recs = view_recs.Segment1.data;
                
                figure
@@ -247,13 +247,13 @@ classdef autopatch_trial < handle
                     at.RMP = NaN;
                 case 1
                    clampName = at.iclamp_rec_names{1};
-                   clamp_recs = lvm_import([clampName '\Recordings.lvm']);
+                   clamp_recs = lvm_import([clampName '/Recordings.lvm']);
                    clamp_recs = clamp_recs.Segment1.data;
                    at.RMP = mean(mean(clamp_recs(1:numSamples,:)));
                 otherwise
                    in = input(['There are ' int2str(L) ' IClamp recordings. Which one do you want to use <index>? : ']);
-                   clampName = at.iclamp_rec_names{in};
-                   clamp_recs = lvm_import([clampName '\Recordings.lvm']);
+                   clampName = at.iclamp_rec_names{in}
+                   clamp_recs = lvm_import([clampName '/Recordings.lvm']);
                    clamp_recs = clamp_recs.Segment1.data;
                    at.RMP = mean(mean(clamp_recs(1:numSamples,:)));
             end

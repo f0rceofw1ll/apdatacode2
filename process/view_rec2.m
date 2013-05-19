@@ -7,10 +7,15 @@
 function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
     %% INITIALIZE
 	close all;
-	f = figure;
+	figure;
 
 	%% CONSTANTS
 	fs = 20000;
+	
+	% check if there is actually a whisker_stim_folder
+	if ~exist('whisker_stim_folder','dir')
+		error('view_rec2:stimfoldernotfound', 'Stimulus folder not found');
+	end
 
     mkdir([expDirectory 'recSegments']) % make directory for recording files
     folderLoc = [expDirectory 'whisker_stim_folder/'];
@@ -21,7 +26,7 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
 	while ~strcmp(command, 'stop')
 		disp(['File # ' int2str(iterNum)])
 		
-        if iterNum == 0
+		if iterNum == 0
             iterString = [];
         else
             iterString = ['_' int2str(iterNum)];
@@ -29,7 +34,7 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
         
 		% check to see if the recData file exists
 		potentialFname = [expDirectory '/recSegments/raw/recData_' int2str(iterNum) '.mat'];
-		if exist(potentialFname)
+		if exist(potentialFname,'file')
 			load(potentialFname);
 		else
 			% Read the labview file and get data for plotting
@@ -41,7 +46,7 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
         
 		% Plot the data in recData
 		
-		plotXLim = [0 length(recData.v)];
+		%plotXLim = [0 length(recData.v)];
 		
         set(gcf,'name',['Segment' iterString]);
 		subplot(2,1,1);
@@ -58,7 +63,8 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
 		end
 		hold off;
         
-		%ylim(sigYLims);
+
+		ylim(sigYLims);
 
 		subplot(2,1,2);
 		plot(t,recData.sense);

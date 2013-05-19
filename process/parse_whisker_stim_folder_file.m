@@ -47,12 +47,18 @@ function [ recData ] = parse_whisker_stim_folder_file( whisker_folder_file )
     
     % Not done yet - this will define stimOnset and stimOffset
     recData.stimOnsetIndex = find(diff(sense) > .25, 1);
-	if isempty(recData.stimOnsetIndex)
-		recData.stimOnsetIndex = max(diff(sense));
+	if isempty(recData.stimOnsetIndex) || recData.stimOnsetIndex < 5
+		d = diff(recData.sense);
+		recData.stimOnsetIndex = find(d == max(d),1);
 	end
     recData.stimOutsetIndex = find(diff(sense) < .25, 1);
-    if isempty(recData.stimOutsetIndex)
-		recData.stimOutsetIndex = min(diff(sense));
+	try
+    if isempty(recData.stimOutsetIndex) || recData.stimOutsetIndex < recData.stimOnsetIndex
+		d = diff(recData.sense);
+		recData.stimOutsetIndex = find(d == min(d),1);
+	end
+	catch
+		disp('help');
 	end
 end
 
