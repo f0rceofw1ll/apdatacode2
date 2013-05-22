@@ -13,12 +13,12 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
 	fs = 20000;
 	
 	% check if there is actually a whisker_stim_folder
-	if ~exist('whisker_stim_folder','dir')
+	if ~exist(expDirectory,'dir')
 		error('view_rec2:stimfoldernotfound', 'Stimulus folder not found');
 	end
 
     mkdir([expDirectory 'recSegments']) % make directory for recording files
-    folderLoc = [expDirectory 'whisker_stim_folder/'];
+    folderLoc = [expDirectory];
 
     iterNum = startAt;
 	command = '';
@@ -38,7 +38,7 @@ function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
 			load(potentialFname);
 		else
 			% Read the labview file and get data for plotting
-			recData = parse_whisker_stim_folder_file( [folderLoc 'whisker_stim' iterString '.lvm'] );
+			recData = parse_whisker_stim_folder_file( [folderLoc '/whisker_stim' iterString '.lvm'] );
 		end
 		
         t = 0:1/fs:length(recData.v)/fs;

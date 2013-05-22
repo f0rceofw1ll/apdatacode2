@@ -11,7 +11,8 @@
 function [] = process_rec2(expDirectory, APthreshold)
     
 	%loop through the contents of the experimetnal derectory
-	folderLoc = [expDirectory '/whisker_stim_folder/'];
+	%folderLoc = [expDirectory '/whisker_stim_folder/'];
+	folderLoc = [expDirectory];
     listing = dir([folderLoc '/*.lvm']);
 	listing = {listing.name};
 	
@@ -30,7 +31,7 @@ function [] = process_rec2(expDirectory, APthreshold)
 		fileLoc = [folderLoc '/' file];	
 		
 		[recData] = parse_whisker_stim_folder_file(fileLoc);
-		recData.iterNum = i;
+		recData.iterNum = i-1;
 		
 		% find AP peaks
 		sel = (max(recData.v)-min(recData.v))/4;
@@ -41,6 +42,9 @@ function [] = process_rec2(expDirectory, APthreshold)
 		% remove the t and v fields
 		stimSegment = recData;
 		stimSegment = rmfield(stimSegment,{'v'});
+		% calculate signal mean (doesn't belong in stimSegment, but we want
+		% to filter by this
+		stimSegment.signalMean = mean(recData.v);
 
 		% create an array of stimSegment structures
 		stimDataArray = [stimDataArray, stimSegment];
