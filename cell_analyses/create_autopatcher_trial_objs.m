@@ -11,12 +11,14 @@
 
 clear all
 close all
-folderLocation = './data';
-expFolderName = '2013-05-18_in_vivo';
+
+folderLocation = '../Out';
+
+expFolderName = '2013-05-18 in vivo';
 folder_prefix = 'experiment';
 
 expDirectory = [folderLocation '/' expFolderName '/'];
-mkdir([expDirectory '/combinedAnalysis/']);
+mkdir([expDirectory 'combinedAnalysis/']);
 
 %Depth List will be structued like this:
 %depthList.folderName = [N x 1] array of expFolderNames (e.g.
@@ -32,11 +34,11 @@ in = input('Reset all_recorded_trials file? [y]/n ', 's');
 switch in
     case 'y'
         all_recorded_trials = [];
-        save([expDirectory 'combinedAnalysis/all_recorded_trials.mat'], 'all_recorded_trials')
+        save('../combinedAnalysis/all_recorded_trials.mat', 'all_recorded_trials')
 end
         
-load([expDirectory 'combinedAnalysis/all_recorded_trials.mat'])
-
+load('../combinedAnalysis/all_recorded_trials.mat')
+        
 % List of all trials
 expList = dir([expDirectory '/' folder_prefix '*']);
 
@@ -72,17 +74,13 @@ for i = 1:length(expList)
     
     % Set cell stats
     memtest_setRaRmCmIh(trial) % set stats
-        
+    
     plotResistances(trial)
     plotCurrentTrace(trial)
     
     % If there is a current clamp recording -> find RMP
-    
     setRMP(trial, 2000); % trial, number of samples to average over
     
-    if ~isempty(trial.vclamp_rec_names)
-    
-    end
     % if either there is a recording file or there is a non-empty whisker
     % stim folder -> whisker recording found
     if ~isempty(r_file) || ~isempty(dir([w_s_folder '/whisker*']))
@@ -96,8 +94,9 @@ for i = 1:length(expList)
     end
     
     save(fileName, 'trial');
+    close all
 end
 
-save([expDirectory 'combinedAnalysis/all_recorded_trials.mat'], 'all_recorded_trials')
-save([expDirectory 'recording_db.mat'], 'trials_w_recordings') % list of files that have recordings
+save('../combinedAnalysis/all_recorded_trials.mat', 'all_recorded_trials')
+save([expDirectory '/recording_db.mat'], 'trials_w_recordings') % list of files that have recordings
 disp('DONE');
