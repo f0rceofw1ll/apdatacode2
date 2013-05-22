@@ -3,7 +3,7 @@
 % returns the fields for the structure
 function [clog_test, neuron_hunting, gigaseal_traces, whole_cell,...
     date, result, initial_depth, recording_file,...
-    current_trace_file, voltage_offset, memtest_rec_file, vclamp_folder_names, iclamp_folder_names,...
+    current_trace_file, voltage_offset, memtest_rec_files, vclamp_folder_names, iclamp_folder_names,...
     whisker_stim_folder]...
     = load_experiment_data...
                                         (expDirectory, expList, i)
@@ -152,12 +152,20 @@ if ~exist(recording_file, 'file')
 end
 
 
-% Membrane test
-memtest_rec_file = [expDirectory expList(i).name '/membrane_test_recordings.lvm'];
-
-if ~exist(memtest_rec_file, 'file')
-    memtest_rec_file = [];
+% 5/22/13: this will now return a list of membrane test files
+all_memtests = dir([expDirectory expList(i).name '/membrane_test_recordings*']);
+memtest_rec_files = {all_memtests.name};
+if ~isempty(memtest_rec_files)
+    for k = 1:length(memtest_rec_files) % full name
+        memtest_rec_files{k} = [expDirectory expList(i).name '/' memtest_rec_files{k}];
+    end
 end
+% OLD Membrane test
+% memtest_rec_file = [expDirectory expList(i).name '/membrane_test_recordings.lvm'];
+% 
+% if ~exist(memtest_rec_file, 'file')
+%     memtest_rec_file = [];
+% end
 
 % Whisker stim folder (on and after 5/7/13)
 whisker_stim_folder = [expDirectory expList(i).name '/whisker_stim_folder'];

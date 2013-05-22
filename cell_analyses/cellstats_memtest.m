@@ -35,8 +35,8 @@ function [Rm, Ra, Cm, Ih, Rin] = cellstats_memtest(wvfrm, stim_onset_index, stim
     stdflatSegment2 = std(flatSegment2);
     
     deltaI = meanflatSegment2 - meanflatSegment1; % in Amps
-    % ABS SHOULD BE UNNECESSARY!!
-    if deltaI < 0
+
+    if deltaI < 0 % somehow, negative resistance
         choice = input('Delta I < 0! Make abs and continue? [y] /n : ', 's');
         switch choice
             case 'y'
@@ -71,13 +71,8 @@ function [Rm, Ra, Cm, Ih, Rin] = cellstats_memtest(wvfrm, stim_onset_index, stim
     %Ra = fzero(fun, Raguess); % in ohms
     Ra_roots = roots([1 -1*Rt Rt*tau/Cm]);
     
-    if length(Ra_roots) == 2
-        in = input(['Possible roots are 1. Ra = ' num2str(Ra_roots(1)/1e6) ' MOhms or 2. Ra = ' ...
-            num2str(Ra_roots(2)/1e6) ' MOhms. Which one [1 or 2]?  ']);
-        Ra = Ra_roots(in);
-    else
-        Ra = Ra_roots(1);
-    end
+    Ra = min(Ra_roots);
+
     disp(['Ra = ' num2str(Ra/1e6) ' MOhms'])
     
     Rm = Rt-Ra; % in ohms

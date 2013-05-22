@@ -52,7 +52,7 @@ for i = 1:length(expList)
     if strcmp(expList(i).name, 'experiment_65444 PM_PC')
         disp('hi')
     end
-    [ct, nh, gt, wc, d, res, id, r_file, ct_file, v_of, m_r_file,...
+    [ct, nh, gt, wc, d, res, id, r_file, ct_file, v_of, m_r_files,...
         vc_folders, ic_folders, w_s_folder]...
         = load_experiment_data(expDirectory, expList, i);
     
@@ -67,7 +67,7 @@ for i = 1:length(expList)
     trial.whisker_recording = r_file;
     trial.breakin_current = wc;
     trial.voltage_offset = v_of;
-    trial.memtest_rec_file = m_r_file;
+    trial.memtest_rec_files = m_r_files;
     trial.vclamp_rec_names = vc_folders;
     trial.iclamp_rec_names = ic_folders;
     trial.whisker_stim_folder = w_s_folder;

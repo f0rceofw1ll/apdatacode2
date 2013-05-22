@@ -131,7 +131,7 @@ function data = lvm_import(filename,verbose)
 %#ok<*ASGLU>
 
 % message level
-if nargin < 2, verbose = 1; end
+if nargin < 2, verbose = 0; end
 if verbose >= 1, fprintf(1,'\nlvm_import v2.1\n'); end
 
 % ask for filename if not provided already

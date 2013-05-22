@@ -14,8 +14,8 @@ classdef autopatch_trial < handle
         voltage_offset
         whisker_stim_folder
         
-        % membrane test object
-        memtest_rec_file
+        % membrane test file locations (all)
+        memtest_rec_files
         
         % arrays of voltage/current clamp recording names
         vclamp_rec_names
@@ -144,8 +144,10 @@ classdef autopatch_trial < handle
         end
         
         % plot membrane test
-        function [meanRecs meanVs] = plotMemtest(at)
-            rec = lvm_import(at.memtest_rec_file);
+        % memtest_num: which memtest to plot (1 if the first one and so
+        % on)
+        function [meanRecs meanVs] = plotMemtest(at, memtest_num)
+            rec = lvm_import(at.memtest_rec_files{memtest_num});
             i = 1;
             figure
             allRecs = [];
@@ -184,18 +186,29 @@ classdef autopatch_trial < handle
         % memtest_setRaRmCm
         % Uses the membrane test to set the Ra, Rm and Cm fields
         function at = memtest_setRaRmCmIh(at)
-            if ~isempty(at.memtest_rec_file)
-                [meanRecs meanVs] = plotMemtest(at);
-                initialV = meanVs(1);
+            if ~isempty(at.memtest_rec_files) % if there is at least one membrane test
+                Rms = []; Ras = []; Cms = []; Ihs = []; Rins = [];
+                for i = 1:length(at.memtest_rec_files)
+                    [meanRecs, meanVs] = plotMemtest(at, i);
+                    initialV = meanVs(1);
 
-                stim_onset_index = find(meanVs ~=initialV, 1); % index of stimulation onset
-                stepV = meanVs(stim_onset_index);
-                stim_offset_index = stim_onset_index + find(meanVs(stim_onset_index:end) ~= stepV, 1)-1; % index of stimulation turning off
+                    stim_onset_index = find(meanVs ~=initialV, 1); % index of stimulation onset
+                    stepV = meanVs(stim_onset_index);
+                    stim_offset_index = stim_onset_index + find(meanVs(stim_onset_index:end) ~= stepV, 1)-1; % index of stimulation turning off
 
-                deltaV = stepV-initialV;
+                    deltaV = stepV-initialV;
 
-                [theRm, theRa, theCm, theIh, theRin] = cellstats_memtest(meanRecs, stim_onset_index, stim_offset_index, deltaV);
-            else
+                    [Rms(end+1), Ras(end+1), Cms(end+1), Ihs(end+1), Rins(end+1)] = ...
+                        cellstats_memtest(meanRecs, stim_onset_index, stim_offset_index, deltaV);
+                end
+                if length(Rms) == 1 % only one option
+                    theRm = Rms; theRa = Ras; theCm = Cms; theIh = Ihs; theRin = Rins;
+                else % let user choose which membrane test
+                    in = input(['Which cell stats? 1-' num2str(length(Rms)) ': ']);
+                    theRm = Rms(in); theRa = Ras(in); theCm = Cms(in);
+                    theIh = Ihs(in); theRin = Rins(in);
+                end
+            else % if there is no memtest, set everything to NaN
                 theRm = NaN;
                 theRa = NaN;
                 theCm = NaN;
@@ -225,7 +238,7 @@ classdef autopatch_trial < handle
                view_recs = lvm_import([currentClampName '/View_profile.lvm']);
                view_recs = view_recs.Segment1.data;
                
-               figure
+               figure('name', ['Clamp # ' int2str(i)])
                subplot(2,1,1)
                plot(view_recs, 'k-')
                
@@ -246,11 +259,13 @@ classdef autopatch_trial < handle
                     disp('setRMP: No ICLAMP found! Setting RMP = NaN')
                     at.RMP = NaN;
                 case 1
+                    plotClamps(at, 'i')
                    clampName = at.iclamp_rec_names{1};
                    clamp_recs = lvm_import([clampName '/Recordings.lvm']);
                    clamp_recs = clamp_recs.Segment1.data;
                    at.RMP = mean(mean(clamp_recs(1:numSamples,:)));
                 otherwise
+                    plotClamps(at, 'i')
                    in = input(['There are ' int2str(L) ' IClamp recordings. Which one do you want to use <index>? : ']);
                    clampName = at.iclamp_rec_names{in}
                    clamp_recs = lvm_import([clampName '/Recordings.lvm']);

@@ -12,7 +12,7 @@ close all
 load('..\combinedAnalysis\all_recorded_trials.mat')
 
 % holding time > 5 minutes
-LongTrials = all_recorded_trials([all_recorded_trials.holding_time] > 5*60);
+LongTrials = all_recorded_trials; %([all_recorded_trials.holding_time] > 5*60);
 LongAndRealTrials = LongTrials([imag([LongTrials.Ra]) == 0 & ~isnan([LongTrials.Ra])]);
 
 allDepths = [LongAndRealTrials.finalDepth];
