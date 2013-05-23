@@ -1,4 +1,4 @@
-function [  ] = sample_clamp_figure( singleTrial )
+function [ f ] = sample_clamp_figure( singleTrial, whichClamp )
 %sample_clamp_figure Plot a sample current clamp or voltage clamp trace
 %   Input: trial object
     
@@ -6,8 +6,10 @@ function [  ] = sample_clamp_figure( singleTrial )
 grayColor = [.5 .5 .5];
 samplingRate = 20000;
 
-%% plot CURRENT clamp figure
 
+switch whichClamp
+    case 'i' % curent clamp
+%% plot CURRENT clamp figure
         try
             clampNames = singleTrial.iclamp_rec_names;
         catch
@@ -17,9 +19,9 @@ samplingRate = 20000;
         
         for i = 1:length(clampNames)
            currentClampName = clampNames{i};
-           clamp_recs = lvm_import([currentClampName '\Recordings.lvm']);
+           clamp_recs = lvm_import([currentClampName '/Recordings.lvm']);
            clamp_recs = clamp_recs.Segment1.data;
-           view_recs = lvm_import([currentClampName '\View_profile.lvm']);
+           view_recs = lvm_import([currentClampName '/View_profile.lvm']);
            view_recs = view_recs.Segment1.data;
            
            lengthRecording = length(view_recs);
@@ -32,7 +34,7 @@ samplingRate = 20000;
            
            meanRec = []; % mean recording
            % cycle through each recording in the protocol
-           f = figure('Name', ['Current clamp #' int2str(i)]);
+           f = figure('Name', [currentClampName ': Current clamp #' int2str(i)])
            
            for j = 1:length(list_of_clamps)
                thisRec = clamp_recs(:,j);
@@ -59,7 +61,7 @@ samplingRate = 20000;
 
         end
         
-        
+    case 'v' % voltage clamp
 %% plot VOLTAGE clamp figure
 
         try
@@ -86,7 +88,7 @@ samplingRate = 20000;
            
            meanRec = []; % mean recording
            % cycle through each recording in the protocol
-           g = figure('Name', ['Voltage clamp #' int2str(i)]);
+           g = figure('Name', [currentClampName ': Voltage clamp #' int2str(i)])
            
            for j = 1:length(list_of_clamps)
                thisRec = clamp_recs(:,j);
@@ -112,6 +114,10 @@ samplingRate = 20000;
            
 
         end
+    otherwise
+        perror('Clamp options are either i or v!');
+end
+
 
 end
 

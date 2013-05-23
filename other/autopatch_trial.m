@@ -8,7 +8,7 @@ classdef autopatch_trial < handle
         pipette_resistances
         hunting_resistances
         gigaseal_resistances
-        date
+        date % experiment date (e.g. 2013/05/18)
         outcome
         breakin_current
         voltage_offset
