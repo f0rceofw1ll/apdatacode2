@@ -13,8 +13,13 @@ clc; close all;
 % onset). Seeing more activity 350 ms after stim onset
 % 7: nothing
 % 8: nothing
-% 9: 
-trialNum = 8;
+% 9: nothing. only 13 seconds.
+% 10: nothing. 86 seconds.
+% 11: nothing. 67 seconds
+% 12: nothing. script fails
+% 13: nothing.
+% 14: 
+trialNum = 14;
 stimDataQuery = {'signalMean <= -50', 'signalMean >= -70'};
 
 %% CONSTANTS
