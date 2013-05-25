@@ -18,10 +18,15 @@ clc; close all;
 % 11: nothing. 67 seconds
 % 12: nothing. script fails
 % 13: nothing.
-% 14: 
-trialNum = 14;
-stimDataQuery = {'signalMean <= -50', 'signalMean >= -70'};
-
+% 14: nothing.
+% 15: nothing. bad recording. 2 secs
+% 16: some stimulaiton. bad seal. no subthreshold or spikes.
+% 17: decent spikes. I guess we didnt do any stimulation here?
+% 18: good subthreshold 50 ms after stim onset. some subthreshold spikes. OK RMP
+% 19: 
+trialNum = 19;
+stimDataQuery = {'signalMean <= -30', 'signalMean >= -70', 'limit == 30'};
+% stimDataQuery = {};
 %% CONSTANTS
 fs = 20000;
 samplesBefore = 500;
@@ -43,7 +48,14 @@ end
 if trialNum > length(all_recorded_trials)
 	error('workflow_ik:notLegitIndex','trialNum is out of bounds');
 end
+
 expDirectory = [all_recorded_trials(trialNum).whisker_stim_folder];
+if isempty(expDirectory)
+    expDirectory = [all_recorded_trials(trialNum).whisker_recording];
+    if isempty(expDirectory)
+        error('workflow_ik: No whisker recording folder or file found!')
+    end
+end
 
 %% VIEW / PROCESS RECORDING
 stim_data_array_file = [expDirectory '/recSegments/stimDataArray.mat'];
@@ -55,8 +67,13 @@ if ~exist(stim_data_array_file,'file')
 		startAt = input('Start at second [#]: ');
 		if ~isnumeric(startAt)
 			startAt = 0;
-		end
-		view_rec2(expDirectory, startAt, viewSigYLims, stimYLims);
+        end
+        % trials older than 18 are single-file (no whisker stim folder)
+        if trialNum > 18
+            view_rec(expDirectory, startAt, viewSigYLims, stimYLims);
+        else
+            view_rec2(expDirectory, startAt, viewSigYLims, stimYLims);
+        end
 	end
 	APthreshold = input('Value to threshold APs At? (mV): ');
 	if ~isnumeric(APthreshold)

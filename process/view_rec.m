@@ -10,11 +10,10 @@
     % row 3: motor sense
     % row 4: stim
 
-function [] = view_rec(expDirectory, startAt, sigYLims, stimYLims)
+function [] = view_rec(fileLoc, startAt, sigYLims, stimYLims)
     
     numSamplesPerSegment = 18670;
     formatString = '%f32%f32%f32%f32%*q';
-    fileLoc = [expDirectory '/whisker_stim.lvm'];
     
     fid = fopen(fileLoc,'rt'); %open the file
 	
@@ -36,7 +35,7 @@ function [] = view_rec(expDirectory, startAt, sigYLims, stimYLims)
 		end
 		
 		% Read the labview file and get data for plotting
-		recSegment = textscan_rec(fid, numSamplesPerSegment, formatString, numHeaderLines);
+		recSegment = textscan_rec(fid, numSamplesPerSegment, formatString, numHeaderLines, 1);
 		
 		% Plot the data in recSegment
 		set(gcf,'name',['Segment ' int2str(iterNum)]);
