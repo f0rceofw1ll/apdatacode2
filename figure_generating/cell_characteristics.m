@@ -1,4 +1,4 @@
-function [  ] = cell_characteristics(  )
+function [ allVOffset ] = cell_characteristics(  )
 %cell_characteristics displays/plots all the important cell characteristics
 %   Finds all_recorded_trials.mat file in folder 'combinedAnalysis'.
 %%
@@ -24,6 +24,8 @@ allMaxR = [LongAndRealTrials.maxR];
 allRMP = [LongAndRealTrials.RMP];
 allHoldingTime = [LongAndRealTrials.holding_time];
 allRin = [LongAndRealTrials.Rin];
+
+allVOffset = [LongAndRealTrials.voltage_offset];
 
 %% Ra
 if sameFigure
@@ -76,7 +78,10 @@ if sameFigure
 else
     subplot(4,2,1)
 end
-plot(allDepths, allIh, 'o', 'linewidth', 2)
+% 12.5 is the conversion factor in patch chip
+% *1e12 to convert to pA
+offsets = allVOffset/12.5e6*1e12;
+%plot(allDepths, allIh, 'o', 'linewidth', 2)
 title('Holding current (pA)', 'fontsize' ,12)
 ylabel('I_h (pA)', 'fontsize', 12)
 

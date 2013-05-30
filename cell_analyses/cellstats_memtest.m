@@ -20,6 +20,7 @@ function [Rm, Ra, Cm, Ih, Rin] = cellstats_memtest(wvfrm, stim_onset_index, stim
     
     f = figure('Name', 'Membrane test waveform');
     plot(wvfrm);
+    xlim([500 1400])
     xlabel('T (samples)')
     
     flatSegment1_indices = 500:500+round(percentSamplestoUse/100*numSamples); % ignore first 100 samples
@@ -47,16 +48,18 @@ function [Rm, Ra, Cm, Ih, Rin] = cellstats_memtest(wvfrm, stim_onset_index, stim
     end
     %% Getting exponential
     
+    % constant after stim_onset_index tells you how much of the fast spike
+    % to ignore
     exp1Wvfrm = wvfrm(stim_onset_index:flatSegment2_indices(1)); % find the exponential curve
     
-    [tau, scaledExpWvfrm, plotExpWvfrm] = fitExp(exp1Wvfrm, meanflatSegment2, stdflatSegment2, samplingRate);
+    [tau, scaledExpWvfrm, plotExpWvfrm, scaledFitWvfrm] = fitExp(exp1Wvfrm, meanflatSegment2, stdflatSegment2, samplingRate);
     
     plotExpIndices = stim_onset_index+1:stim_onset_index + length(plotExpWvfrm);
     
     figure(f); plot(plotExpIndices, plotExpWvfrm, 'r', 'linewidth', 2)
     
     % calculations
-    Q1 = trapz(scaledExpWvfrm)*1/samplingRate; % in seconds
+    Q1 = trapz(scaledFitWvfrm)*1/samplingRate; % in seconds
     Q2 = deltaI*tau; % in coulombs
     Qt = Q1+Q2; % in coulombs
     
@@ -70,7 +73,8 @@ function [Rm, Ra, Cm, Ih, Rin] = cellstats_memtest(wvfrm, stim_onset_index, stim
 %     fun = @(Ra) Ra^2-Ra*Rt+Rt*(tau/Cm);
     %Ra = fzero(fun, Raguess); % in ohms
     Ra_roots = roots([1 -1*Rt Rt*tau/Cm]);
-    
+    Ras = linspace(0, 1e9);
+    figure,plot(Ras, Ras.^2-Rt.*Ras+Rt.*tau/Cm)
     Ra = min(Ra_roots);
 
     disp(['Ra = ' num2str(Ra/1e6) ' MOhms'])

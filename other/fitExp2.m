@@ -1,4 +1,4 @@
-function [ tau, scaledExpWvfrm, plotExpWvfrm, scaledFitWvfrm] = fitExp( expWvfrm, meanflatSegment, stdflatSegment, samplingRate )
+function [ tau, scaledExpWvfrm, plotExpWvfrm, scaledFitWvfrm] = fitExp2( expWvfrm, meanflatSegment, stdflatSegment, samplingRate )
 % fitExp.m Calculates tau of given exponential
 %   Inputs: expWvfrm: Waveform of JUST the exponential curve
 %           meanflatSegment: mean value of flat segment
@@ -25,9 +25,11 @@ function [ tau, scaledExpWvfrm, plotExpWvfrm, scaledFitWvfrm] = fitExp( expWvfrm
     
     % fitting
     try
-        [myFit, gof] = fit(exp_t', expWvfrm, 'exp1');
-        tau = abs(1/myFit.b); % tau = 1/b in y(t) = Ae^(bt), in seconds
-        scaledFitWvfrm = myFit.a*exp(myFit.b*exp_t);
+        [myFit, gof] = fit(exp_t', expWvfrm, 'exp2');
+        tau1 = abs(1/myFit.b); % tau = 1/b in y(t) = Ae^(bt), in seconds
+        tau2 = abs(1/myFit.d); 
+        tau = max([tau1 tau2]); % pick slowest time constant
+        scaledFitWvfrm = myFit.a*exp(myFit.b*exp_t) + myFit.c*exp(myFit.d*exp_t);
         hold on, plot(exp_t, scaledFitWvfrm*1e12, 'r', 'linewidth', 2)
         xlabel ('Time', 'fontsize', 12)
         ylabel('Current (pA)', 'fontsize' ,12)

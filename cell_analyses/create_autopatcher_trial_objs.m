@@ -14,7 +14,7 @@ close all
 
 folderLocation = '../Out';
 
-expFolderName = '2013-04-24 in vivo';
+expFolderName = '2013-05-12 in vivo';
 folder_prefix = 'experiment';
 
 expDirectory = [folderLocation '/' expFolderName '/'];

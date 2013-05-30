@@ -133,11 +133,11 @@ classdef autopatch_trial < handle
         % plot Breaking current
         function plotBreakin(at)
             samplingRate = 20000; % change if sampling rate is different
-            bc = at.breakin_current;
+            bc = at.breakin_current.Segment2.data;
             tVec = linspace(0, length(bc)/samplingRate*1000, length(bc));
             
             figure
-            plot(tVec, at.breakin_current);
+            plot(tVec, bc);
             title('Breakin current')
             ylabel('Current (pA)')
             xlabel('Time (ms)')
@@ -200,6 +200,8 @@ classdef autopatch_trial < handle
 
                     [Rms(end+1), Ras(end+1), Cms(end+1), Ihs(end+1), Rins(end+1)] = ...
                         cellstats_memtest(meanRecs, stim_onset_index, stim_offset_index, deltaV);
+                    disp(['MEMTEST # ' int2str(i) ' DONE'])
+                    pause
                 end
                 if length(Rms) == 1 % only one option
                     theRm = Rms; theRa = Ras; theCm = Cms; theIh = Ihs; theRin = Rins;
