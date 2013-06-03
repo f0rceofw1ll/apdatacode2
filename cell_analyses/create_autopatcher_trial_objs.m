@@ -14,7 +14,7 @@ close all
 
 folderLocation = '../Out';
 
-expFolderName = '2013-05-12 in vivo';
+expFolderName = '2013-04-25 in vivo';
 folder_prefix = 'experiment';
 
 expDirectory = [folderLocation '/' expFolderName '/'];
@@ -81,7 +81,7 @@ if doTrial
         plotCurrentTrace(trial)
 
         % If there is a current clamp recording -> find RMP
-        setRMP(trial, 2000); % trial, number of samples to average over
+        setRMP_fromRecording(trial); % trial, number of samples to average over
 
         % if either there is a recording file or there is a non-empty whisker
         % stim folder -> whisker recording found

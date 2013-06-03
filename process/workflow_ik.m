@@ -24,8 +24,8 @@ clc; close all;
 % 17: decent spikes. I guess we didnt do any stimulation here?
 % 18: good subthreshold 50 ms after stim onset. some subthreshold spikes. OK RMP
 % 19: 
-trialNum = 19;
-stimDataQuery = {'signalMean <= -30', 'signalMean >= -70', 'limit == 30'};
+trialNum = 6;
+stimDataQuery = {'signalMean <= -50', 'signalMean >= -80'};
 % stimDataQuery = {};
 %% CONSTANTS
 fs = 20000;
@@ -92,3 +92,6 @@ overlaid_responses(expDirectory, db, fs, samplesBefore, samplesAfter, viewSigYLi
 
 %% PSTH
 psth(expDirectory, db, fs, samplesBefore, samplesAfter, PSTHresponseWindow, PSTHbinwidth)
+
+%% OVERLAID APs
+overlaid_APs(expDirectory, db, fs, 500, 1000);

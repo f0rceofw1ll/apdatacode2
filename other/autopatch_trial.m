@@ -201,7 +201,6 @@ classdef autopatch_trial < handle
                     [Rms(end+1), Ras(end+1), Cms(end+1), Ihs(end+1), Rins(end+1)] = ...
                         cellstats_memtest(meanRecs, stim_onset_index, stim_offset_index, deltaV);
                     disp(['MEMTEST # ' int2str(i) ' DONE'])
-                    pause
                 end
                 if length(Rms) == 1 % only one option
                     theRm = Rms; theRa = Ras; theCm = Cms; theIh = Ihs; theRin = Rins;
@@ -276,6 +275,23 @@ classdef autopatch_trial < handle
             end
         end
         
+        % function to get the RMP from the recording itself after 1 minute
+        % (or whenever you want)
+        function setRMP_fromRecording(at)
+            % if a whisker recording exists
+            if ~isempty(at.whisker_recording)
+                setRMP(at, 2000);
+            elseif ~isempty(at.whisker_stim_folder)
+                try
+                    sampleRec = lvm_import([at.whisker_stim_folder '/whisker_stim_60.lvm']);
+                    at.RMP = mean(sampleRec.Segment1.data(:,1));
+                catch
+                    setRMP(at, 2000);
+                end
+            else
+                disp('setRMP_fromRecording: no whisker recording found!')
+            end
+        end    
         % function to measure holding time
         function setHoldingTime(at, folderName)
             

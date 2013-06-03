@@ -81,7 +81,7 @@ end
 % 12.5 is the conversion factor in patch chip
 % *1e12 to convert to pA
 offsets = allVOffset/12.5e6*1e12;
-%plot(allDepths, allIh, 'o', 'linewidth', 2)
+plot(allDepths, allIh, 'o', 'linewidth', 2)
 title('Holding current (pA)', 'fontsize' ,12)
 ylabel('I_h (pA)', 'fontsize', 12)
 
