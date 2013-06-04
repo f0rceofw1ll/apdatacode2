@@ -62,6 +62,7 @@ if doTrial
         trial.pipette_resistances = ct;
         trial.hunting_resistances = nh;
         trial.gigaseal_resistances = gt;
+        
         trial.date = d;
         trial.outcome = res;
         trial.initDepth = id;
@@ -73,7 +74,9 @@ if doTrial
         trial.vclamp_rec_names = vc_folders;
         trial.iclamp_rec_names = ic_folders;
         trial.whisker_stim_folder = w_s_folder;
-
+        
+        % set max gigasealing resistance
+        setmaxR(trial);
         % Set cell stats
         memtest_setRaRmCmIh(trial) % set stats
 

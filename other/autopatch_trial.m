@@ -27,19 +27,19 @@ classdef autopatch_trial < handle
 %         % references to recording files
         currentTraceFile
         recFile
-        
+        RMP % resting membrane potential (mV)
+        maxR % max gigaselaing resistance (MOhms)
     end
     
     properties (SetAccess = private)
         outcomeID
         finalDepth
         
-        maxR % max gigaselaing resistance (MOhms)
+        
         Ra % Access resistance    (Ohms)
         Rm % Membrane resistance  (Ohms)
         Cm % Membrane capacitance (F)
         Ih % Holding current      (A)
-        RMP % resting membrane potential (V) <<?>>
         Rin % input resistance ( Ohms )
         holding_time % cell holding time in seconds - measured by measuring length of whisker stim
         
@@ -111,12 +111,12 @@ classdef autopatch_trial < handle
         end
         
         % get maximum gigasealing resistane in MOhms
-        function maxR = get.maxR(at)
+        function setmaxR(at)
             if isstruct(at.gigaseal_resistances)
-                maxR = max(at.gigaseal_resistances.Segment1.data(:,1));
+                at.maxR = max(at.gigaseal_resistances.Segment1.data(:,1));
             else
                 disp('get.maxR: No gigasealing trace found! Setting maxR to []')
-                maxR = [];
+                at.maxR = [];
             end
         end
         

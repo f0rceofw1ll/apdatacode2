@@ -24,7 +24,8 @@ clc; close all;
 % 17: decent spikes. I guess we didnt do any stimulation here?
 % 18: good subthreshold 50 ms after stim onset. some subthreshold spikes. OK RMP
 % 19: 
-trialNum = 6;
+trialNum = 20;
+viewAnyway = 1; % in case you want to view the recording regardless of whether it's already been processed
 stimDataQuery = {'signalMean <= -50', 'signalMean >= -80'};
 % stimDataQuery = {};
 %% CONSTANTS
@@ -59,7 +60,7 @@ end
 
 %% VIEW / PROCESS RECORDING
 stim_data_array_file = [expDirectory '/recSegments/stimDataArray.mat'];
-if ~exist(stim_data_array_file,'file')
+if ~exist(stim_data_array_file,'file') || viewAnyway
 	%give the option to view first
 	disp('The data from this trial has not been processed');
 	a = input('Would you like to view it first? y/n: ','s');

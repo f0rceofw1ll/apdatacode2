@@ -1,4 +1,4 @@
-function [ allVOffset ] = cell_characteristics(  )
+function [] = cell_characteristics(  )
 %cell_characteristics displays/plots all the important cell characteristics
 %   Finds all_recorded_trials.mat file in folder 'combinedAnalysis'.
 %%
@@ -11,9 +11,21 @@ close all
 
 load('..\combinedAnalysis\all_recorded_trials.mat')
 
+all_recorded_trials(13).RMP = -43.25; % manually inspected from recordings
+all_recorded_trials(16).RMP = -37.46;
+all_recorded_trials(7).RMP = -43.2;
+all_recorded_trials(15).RMP = -31.8;
+all_recorded_trials(1).RMP = -70.3;
+all_recorded_trials(23).RMP = -64.1;
+all_recorded_trials(20).RMP = -61.32;
+all_recorded_trials(14).maxR = 1593; % visual inspection of
+%gigasealing trace
+all_recorded_trials(13).maxR = 4002;
+all_recorded_trials(14).maxR = 3011;
+all_recorded_trials(4).maxR =  2814;
 % holding time > 5 minutes
-LongTrials = all_recorded_trials; %([all_recorded_trials.holding_time] > 5*60);
-LongAndRealTrials = LongTrials([imag([LongTrials.Ra]) == 0 & ~isnan([LongTrials.Ra])]);
+LongTrials = all_recorded_trials([all_recorded_trials.holding_time] > 5*60);
+LongAndRealTrials = LongTrials([LongTrials.RMP] < -40);
 
 allDepths = [LongAndRealTrials.finalDepth];
 allRa = [LongAndRealTrials.Ra];
@@ -26,6 +38,8 @@ allHoldingTime = [LongAndRealTrials.holding_time];
 allRin = [LongAndRealTrials.Rin];
 
 allVOffset = [LongAndRealTrials.voltage_offset];
+
+% Corrections
 
 %% Ra
 if sameFigure
@@ -119,5 +133,16 @@ plot(allDepths, allHoldingTime/60, 'o', 'linewidth', 2) % holding time in minute
 title('Holding Time', 'fontsize' ,12)
 ylabel('Holding time (min)', 'fontsize', 12)
 xlabel('Depth (\mum)', 'fontsize', 12)
+
+disp(['N = ' int2str(length(LongAndRealTrials)) ' trials'])
+disp(['Num RMP = ' int2str(length(allRMP(~isnan(allRMP))))])
+disp(['Num Iholding = ' int2str(length(allIh(~isnan(allIh))))])
+disp(['Num Ra = ' int2str(length(allRa(~isnan(allRa))))])
+disp(['Num Rm = ' int2str(length(allRm(~isnan(allRm))))])
+disp(['Num Cm = ' int2str(length(allCm(~isnan(allCm))))])
+disp(['Num maxR = ' int2str(length(allMaxR(~isnan(allMaxR))))])
+disp(['Num HoldingTime = ' int2str(length(allHoldingTime(~isnan(allHoldingTime))))])
+disp(['Num Rin = ' int2str(length(allRin(~isnan(allRin))))])
 end
+
 

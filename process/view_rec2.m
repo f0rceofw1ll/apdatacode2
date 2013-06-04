@@ -3,6 +3,8 @@
 % Inputs: expDirectory: (i.e. C:\Greg\Out\2013-05-08 in
 %                       vivo\experiment_10556 PM_PC\)
 %         startAt: iteration number
+%         sigYLims: display limits [lower upper]
+%         stimYLims: display limits [lower upper]
 
 function [] = view_rec2(expDirectory, startAt, sigYLims, stimYLims)
     %% INITIALIZE
